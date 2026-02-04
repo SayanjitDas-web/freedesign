@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>(beta)Simple Design Editor</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="home-screen" class="screen">
+      <header>
+        <h1>My Design Studio</h1>
+        <div class="actions">
+          <button onclick="createNewDesign()" class="btn-primary">
+            + New Design
+          </button>
+          <button onclick="triggerImport()" class="btn-secondary">
+            Import JSON
+          </button>
+          <input
+            type="file"
+            id="file-input"
+            accept=".json"
+            onchange="handleFileImport(this)"
+            hidden
+          />
+        </div>
+      </header>
+
+      <div class="gallery-container">
+        <h2>Your Projects</h2>
+        <div id="project-list" class="grid">
+          <p class="empty-state">No designs yet. Create one!</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="editor-screen" class="screen hidden">
+      <nav class="toolbar">
+        <button onclick="goHome()" class="btn-text">← Back</button>
+
+        <span id="design-title" contenteditable="true" onblur="updateTitle()"
+          >Untitled Design</span
+        >
+
+        <div
+          class="edit-actions"
+          style="
+            margin-right: 20px;
+            border-right: 1px solid #ddd;
+            padding-right: 20px;
+          "
+        >
+          <button onclick="copyElement()" title="Ctrl+C">📋 Copy</button>
+          <button onclick="pasteElement()" title="Ctrl+V">📌 Paste</button>
+          <button onclick="groupSelected()" title="Ctrl+G">📁 Group</button>
+          <button onclick="ungroupSelected()" title="Ctrl+Shift+G">
+            ⚡ Ungroup
+          </button>
+          <button onclick="mergeSelected()" title="Merge into Container">
+            📦 Merge
+          </button>
+        </div>
+        <div class="io-actions">
+          <button onclick="saveDesign()" class="btn-save">Save</button>
+          <button onclick="exportDesign()" class="btn-export">
+            Export JSON
+          </button>
+        </div>
+      </nav>
+
+      <div class="main-layout">
+        <aside class="tools-sidebar">
+          <button onclick="addElement('rect')">⬜ Square</button>
+          <button onclick="addElement('circle')">⚪ Circle</button>
+          <button onclick="addElement('text')">Tt Text</button>
+          <button onclick="addElement('line')">〰️ Line</button>
+          <button
+            onclick="triggerAddFont()"
+            style="background: #e1f5fe; border: 1px solid #b3e5fc"
+          >
+            🔤 Add Google Font
+          </button>
+        </aside>
+
+        <div class="workspace">
+          <div id="canvas"></div>
+        </div>
+
+        <aside class="layers-panel">
+          <div class="sidebar-tabs">
+            <button
+              id="btn-tab-props"
+              class="tab-btn active"
+              onclick="switchTab('props')"
+            >
+              Properties
+            </button>
+            <button
+              id="btn-tab-layers"
+              class="tab-btn"
+              onclick="switchTab('layers')"
+            >
+              Layers
+            </button>
+          </div>
+
+          <div id="tab-props" class="tab-content active">
+            <div id="properties-panel" class="properties-box">
+              <p class="empty-selection">
+                Select an element to edit properties.
+              </p>
+            </div>
+          </div>
+
+          <div id="tab-layers" class="tab-content">
+            <div id="layers-list"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </body>
+  <script src="scripts/core/state.js"></script>
+  <script src="scripts/core/storage.js"></script>
+  <script src="scripts/core/init.js"></script>
+
+  <script src="scripts/home/projects.js"></script>
+
+  <script src="scripts/canvas/renderCanvas.js"></script>
+  <script src="scripts/canvas/drag.js"></script>
+  <script src="scripts/canvas/handles.js"></script>
+  <script src="scripts/canvas/elements.js"></script>
+
+  <script src="scripts/editor/layers.js"></script>
+  <script src="scripts/editor/propertiesPanel.js"></script>
+  <script src="scripts/editor/tabs.js"></script>
+
+  <script src="scripts/features/fonts.js"></script>
+  <script src="scripts/features/copyPaste.js"></script>
+  <script src="scripts/features/keyboard.js"></script>
+  <script src="scripts/features/importExport.js"></script>
+
+  <script src="scripts/main.js"></script>
+</html>

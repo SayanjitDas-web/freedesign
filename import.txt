@@ -1,0 +1,21 @@
+<script src="scripts/core/state.js"></script>
+<script src="scripts/core/storage.js"></script>
+<script src="scripts/core/init.js"></script>
+
+<script src="scripts/home/projects.js"></script>
+
+<script src="scripts/canvas/renderCanvas.js"></script>
+<script src="scripts/canvas/drag.js"></script>
+<script src="scripts/canvas/handles.js"></script>
+<script src="scripts/canvas/elements.js"></script>
+
+<script src="scripts/editor/layers.js"></script>
+<script src="scripts/editor/propertiesPanel.js"></script>
+<script src="scripts/editor/tabs.js"></script>
+
+<script src="scripts/features/fonts.js"></script>
+<script src="scripts/features/copyPaste.js"></script>
+<script src="scripts/features/keyboard.js"></script>
+<script src="scripts/features/importExport.js"></script>
+
+<script src="scripts/main.js"></script>
