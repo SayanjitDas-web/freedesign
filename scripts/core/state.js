@@ -5,6 +5,14 @@ let selectedElementId = null;
 let clipboard = null;
 let selectedIds = [];
 
+let historyStack = [];
+let historyStep = -1;
+const MAX_HISTORY = 50; // Prevent memory issues
+
+let isResizing = false;
+let currentHandle = null;
+let resizeStart = { x: 0, y: 0, w: 0, h: 0, elX: 0, elY: 0, rotation: 0 };
+
 // --- FONT STATE ---
 const defaultFonts = [
   "Roboto",

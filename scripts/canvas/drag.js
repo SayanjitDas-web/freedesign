@@ -105,6 +105,8 @@ function dragEnd(e) {
     elData.y = parseInt(elDom.style.top);
   }
 
+  addToHistory();
+
   // 2. Cleanup
   activeDragId = null;
   document.removeEventListener("mousemove", dragMove);

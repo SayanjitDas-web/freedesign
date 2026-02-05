@@ -46,4 +46,5 @@ function pasteElement() {
     renderLayers();
     renderPropertiesPanel();
     switchTab('props'); // Switch to props so user can edit new item immediately
+    addToHistory();
 }

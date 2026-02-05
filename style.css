@@ -63,19 +63,20 @@ header { display: flex; justify-content: space-between; align-items: center; mar
 .workspace {
     flex: 1;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
     background: #e0e0e0;
-    overflow: auto;
+    overflow: auto;          /* Add scrollbars if canvas is huge */
+    padding: 40px;
 }
 
 #canvas {
-    width: 800px;
-    height: 600px;
     background: white;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    position: relative; /* Essential for absolute positioning of children */
+    position: relative;
     overflow: hidden;
+    flex-shrink: 0; /* Prevent shrinking on small screens */
+    transition: width 0.3s, height 0.3s; /* Smooth resize */
 }
 
 /* Design Elements */
@@ -351,4 +352,115 @@ svg.element.selected path {
 
 .handle.control-point {
     background: var(--primary); /* Filled dot for curve control */
+}
+
+/* --- TRANSFORM CONTROLS --- */
+.transform-controls {
+    position: absolute;
+    border: 1px solid var(--primary);
+    pointer-events: none; /* Let clicks pass through to the element below if needed */
+    z-index: 2000;
+    display: none; /* Hidden by default */
+}
+
+.transform-controls.active {
+    display: block;
+}
+
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border: 1px solid var(--primary);
+    pointer-events: auto; /* Catch clicks */
+    z-index: 2001;
+}
+
+/* Handle Positions */
+.handle-tl { top: -6px; left: -6px; cursor: nw-resize; }
+.handle-tr { top: -6px; right: -6px; cursor: ne-resize; }
+.handle-bl { bottom: -6px; left: -6px; cursor: sw-resize; }
+.handle-br { bottom: -6px; right: -6px; cursor: se-resize; }
+
+.handle-tm { top: -6px; left: 50%; transform: translateX(-50%); cursor: n-resize; }
+.handle-bm { bottom: -6px; left: 50%; transform: translateX(-50%); cursor: s-resize; }
+.handle-lm { top: 50%; left: -6px; transform: translateY(-50%); cursor: w-resize; }
+.handle-rm { top: 50%; right: -6px; transform: translateY(-50%); cursor: e-resize; }
+
+/* Rotation Handle (Stick sticking out top) */
+.handle-rot {
+    top: -25px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: grab;
+}
+.rot-stick {
+    position: absolute;
+    top: -20px; left: 50%;
+    width: 1px; height: 20px;
+    background: var(--primary);
+}
+
+/* --- AI MAGIC BAR --- */
+.ai-container {
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    text-align: center;
+}
+
+.magic-bar {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #fff 0%, #f3f4f6 100%);
+    border: 2px solid transparent;
+    border-radius: 50px;
+    padding: 5px 5px 5px 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background-clip: padding-box; /* Necessary for gradient border tricks if used */
+    position: relative;
+    border: 1px solid #ddd;
+}
+
+.magic-bar:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.2);
+}
+
+.magic-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.magic-bar button {
+    background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+    color: white;
+    border-radius: 40px;
+    padding: 10px 25px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.magic-bar button:hover {
+    transform: scale(1.05);
+}
+
+.magic-bar button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.ai-hint {
+    font-size: 11px;
+    color: #999;
+    margin-top: 8px;
 }

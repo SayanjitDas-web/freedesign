@@ -120,6 +120,7 @@ function deleteElement(id) {
     currentDesign.elements = currentDesign.elements.filter((e) => e.id !== id);
     selectedElementId = null;
     renderCanvas();
+    addToHistory();
   }
 }
 
@@ -210,6 +211,7 @@ function groupSelected() {
 
     renderLayers();
     renderCanvas();
+    addToHistory();
 }
 
 function ungroupSelected() {
@@ -224,6 +226,7 @@ function ungroupSelected() {
     // Reset selection to individual items
     renderLayers();
     renderCanvas();
+    addToHistory();
 }
 
 // --- MERGE LOGIC (Container Strategy) ---

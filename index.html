@@ -1,144 +1,189 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>(beta)Simple Design Editor</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="home-screen" class="screen">
-      <header>
-        <h1>My Design Studio</h1>
-        <div class="actions">
-          <button onclick="createNewDesign()" class="btn-primary">
-            + New Design
-          </button>
-          <button onclick="triggerImport()" class="btn-secondary">
-            Import JSON
-          </button>
-          <input
-            type="file"
-            id="file-input"
-            accept=".json"
-            onchange="handleFileImport(this)"
-            hidden
-          />
-        </div>
-      </header>
 
-      <div class="gallery-container">
-        <h2>Your Projects</h2>
-        <div id="project-list" class="grid">
-          <p class="empty-state">No designs yet. Create one!</p>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>free Design vBeta</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body>
+  <div id="home-screen" class="screen">
+    <header>
+      <h1>Free Design</h1>
+      <button onclick="openSettings()" style="font-size:12px; opacity:0.7;">⚙️ AI Settings</button>
+      <div class="actions">
+        <button onclick="createNewDesign()" class="btn-primary">
+          + New Design
+        </button>
+        <button onclick="triggerImport()" class="btn-secondary">
+          Import JSON
+        </button>
+        <input type="file" id="file-input" accept=".json" onchange="handleFileImport(this)" hidden />
       </div>
+    </header>
+
+    <div class="ai-container">
+      <div class="magic-bar">
+        <span style="font-size: 20px;">✨</span>
+        <input type="text" id="ai-prompt"
+          placeholder="Describe a design (e.g., 'A cyberpunk banner with neon text and a robot image')...">
+        <button onclick="generateDesign()" id="btn-generate">Generate</button>
+      </div>
+      <p class="ai-hint">Requires Gemini API Key (Click Settings)</p>
     </div>
 
-    <div id="editor-screen" class="screen hidden">
-      <nav class="toolbar">
-        <button onclick="goHome()" class="btn-text">← Back</button>
+    <div class="gallery-container">
+      <h2>Your Projects</h2>
+      <div id="project-list" class="grid">
+        <p class="empty-state">No designs yet. Create one!</p>
+      </div>
+    </div>
+  </div>
 
-        <span id="design-title" contenteditable="true" onblur="updateTitle()"
-          >Untitled Design</span
-        >
+  <div id="editor-screen" class="screen hidden">
+    <nav class="toolbar">
+      <button onclick="goHome()" class="btn-text">← Back</button>
+      <div class="history-actions" style="margin-right: 15px; border-right: 1px solid #ddd; padding-right: 15px;">
+        <button onclick="undo()" title="Undo (Ctrl+Z)">↩️</button>
+        <button onclick="redo()" title="Redo (Ctrl+Y)">↪️</button>
+      </div>
 
-        <div
-          class="edit-actions"
-          style="
+      <span id="design-title" contenteditable="true" onblur="updateTitle()">Untitled Design</span>
+
+      <div class="edit-actions" style="
             margin-right: 20px;
             border-right: 1px solid #ddd;
             padding-right: 20px;
-          "
-        >
-          <button onclick="copyElement()" title="Ctrl+C">📋 Copy</button>
-          <button onclick="pasteElement()" title="Ctrl+V">📌 Paste</button>
-          <button onclick="groupSelected()" title="Ctrl+G">📁 Group</button>
-          <button onclick="ungroupSelected()" title="Ctrl+Shift+G">
-            ⚡ Ungroup
-          </button>
-          <button onclick="mergeSelected()" title="Merge into Container">
-            📦 Merge
-          </button>
-        </div>
-        <div class="io-actions">
-          <button onclick="saveDesign()" class="btn-save">Save</button>
-          <button onclick="exportDesign()" class="btn-export">
-            Export JSON
-          </button>
-        </div>
-      </nav>
-
-      <div class="main-layout">
-        <aside class="tools-sidebar">
-          <button onclick="addElement('rect')">⬜ Square</button>
-          <button onclick="addElement('circle')">⚪ Circle</button>
-          <button onclick="addElement('text')">Tt Text</button>
-          <button onclick="addElement('line')">〰️ Line</button>
-          <button
-            onclick="triggerAddFont()"
-            style="background: #e1f5fe; border: 1px solid #b3e5fc"
-          >
-            🔤 Add Google Font
-          </button>
-        </aside>
-
-        <div class="workspace">
-          <div id="canvas"></div>
-        </div>
-
-        <aside class="layers-panel">
-          <div class="sidebar-tabs">
-            <button
-              id="btn-tab-props"
-              class="tab-btn active"
-              onclick="switchTab('props')"
-            >
-              Properties
-            </button>
-            <button
-              id="btn-tab-layers"
-              class="tab-btn"
-              onclick="switchTab('layers')"
-            >
-              Layers
-            </button>
-          </div>
-
-          <div id="tab-props" class="tab-content active">
-            <div id="properties-panel" class="properties-box">
-              <p class="empty-selection">
-                Select an element to edit properties.
-              </p>
-            </div>
-          </div>
-
-          <div id="tab-layers" class="tab-content">
-            <div id="layers-list"></div>
-          </div>
-        </aside>
+          ">
+        <button onclick="copyElement()" title="Ctrl+C">📋 Copy</button>
+        <button onclick="pasteElement()" title="Ctrl+V">📌 Paste</button>
+        <button onclick="groupSelected()" title="Ctrl+G">📁 Group</button>
+        <button onclick="ungroupSelected()" title="Ctrl+Shift+G">
+          ⚡ Ungroup
+        </button>
+        <button onclick="mergeSelected()" title="Merge into Container">
+          📦 Merge
+        </button>
       </div>
+      <div class="io-actions">
+        <button onclick="saveDesign()" class="btn-save">Save</button>
+        <button onclick="exportDesign()" class="btn-export">
+          Export JSON
+        </button>
+        <button onclick="downloadImage('png')" style="background:#6c5ce7; color:white;">PNG</button>
+        <button onclick="downloadImage('jpg')" style="background:#e84393; color:white;">JPG</button>
+      </div>
+    </nav>
+
+    <div class="main-layout">
+      <aside class="tools-sidebar">
+        <button onclick="addElement('rect')">⬜ Square</button>
+        <button onclick="addElement('circle')">⚪ Circle</button>
+        <button onclick="addElement('text')">Tt Text</button>
+        <button onclick="addElement('line')">〰️ Line</button>
+        <button onclick="triggerAddImage()" style="margin-top:5px; border-top:1px solid #eee; padding-top:10px;">🖼️
+          Image
+        </button>
+
+        <input type="file" id="img-upload-input" accept="image/*" onchange="handleImageUpload(this)" hidden>
+        <button onclick="triggerAddFont()" style="background: #e1f5fe; border: 1px solid #b3e5fc">
+          🔤 Add Google Font
+        </button>
+      </aside>
+
+      <div class="workspace">
+        <div id="canvas"></div>
+        <div id="transform-overlay" class="transform-controls">
+          <div class="resize-handle handle-tl" data-handle="tl"></div>
+          <div class="resize-handle handle-tr" data-handle="tr"></div>
+          <div class="resize-handle handle-bl" data-handle="bl"></div>
+          <div class="resize-handle handle-br" data-handle="br"></div>
+
+          <div class="resize-handle handle-tm" data-handle="tm"></div>
+          <div class="resize-handle handle-bm" data-handle="bm"></div>
+          <div class="resize-handle handle-lm" data-handle="lm"></div>
+          <div class="resize-handle handle-rm" data-handle="rm"></div>
+
+          <div class="rot-stick"></div>
+          <div class="resize-handle handle-rot" data-handle="rot"></div>
+        </div>
+      </div>
+
+      <aside class="layers-panel">
+        <div class="sidebar-tabs">
+          <button id="btn-tab-props" class="tab-btn active" onclick="switchTab('props')">
+            Properties
+          </button>
+          <button id="btn-tab-layers" class="tab-btn" onclick="switchTab('layers')">
+            Layers
+          </button>
+        </div>
+
+        <div id="tab-props" class="tab-content active">
+          <div id="properties-panel" class="properties-box">
+            <p class="empty-selection">
+              Select an element to edit properties.
+            </p>
+          </div>
+        </div>
+
+        <div id="tab-layers" class="tab-content">
+          <div id="layers-list"></div>
+        </div>
+      </aside>
     </div>
-  </body>
-  <script src="scripts/core/state.js"></script>
-  <script src="scripts/core/storage.js"></script>
-  <script src="scripts/core/init.js"></script>
+  </div>
+  <dialog id="settings-modal" style="border:none; border-radius:8px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.2); width: 400px;">
+    <h3>AI Configuration</h3>
+    
+    <div style="margin-bottom: 20px;">
+        <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:12px;">Gemini API Key (Logic)</label>
+        <p style="font-size:11px; color:#666; margin:0 0 5px 0;">
+            From <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>
+        </p>
+        <input type="password" id="gemini-key-input" placeholder="Paste Gemini Key..." style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+    </div>
 
-  <script src="scripts/home/projects.js"></script>
+    <div style="margin-bottom: 20px;">
+        <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:12px;">Pollinations API Key (Images)</label>
+        <p style="font-size:11px; color:#666; margin:0 0 5px 0;">
+            From <a href="https://enter.pollinations.ai/" target="_blank">Pollinations Dashboard</a>
+        </p>
+        <input type="password" id="pollinations-key-input" placeholder="Paste Pollinations Key..." style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+    </div>
+    
+    <div style="text-align:right;">
+        <button onclick="closeSettings()" style="background:#eee; color:#333; padding:8px 15px; border:none; border-radius:4px; cursor:pointer;">Cancel</button>
+        <button onclick="saveSettings()" style="background:var(--primary); color:white; padding:8px 15px; border:none; border-radius:4px; cursor:pointer; margin-left:5px;">Save</button>
+    </div>
+</dialog>
+</body>
+<script src="scripts/core/state.js"></script>
+<script src="scripts/core/storage.js"></script>
+<script src="scripts/core/init.js"></script>
 
-  <script src="scripts/canvas/renderCanvas.js"></script>
-  <script src="scripts/canvas/drag.js"></script>
-  <script src="scripts/canvas/handles.js"></script>
-  <script src="scripts/canvas/elements.js"></script>
+<script src="scripts/home/projects.js"></script>
 
-  <script src="scripts/editor/layers.js"></script>
-  <script src="scripts/editor/propertiesPanel.js"></script>
-  <script src="scripts/editor/tabs.js"></script>
+<script src="scripts/canvas/renderCanvas.js"></script>
+<script src="scripts/canvas/drag.js"></script>
+<script src="scripts/canvas/handles.js"></script>
+<script src="scripts/canvas/elements.js"></script>
 
-  <script src="scripts/features/fonts.js"></script>
-  <script src="scripts/features/copyPaste.js"></script>
-  <script src="scripts/features/keyboard.js"></script>
-  <script src="scripts/features/importExport.js"></script>
+<script src="scripts/editor/layers.js"></script>
+<script src="scripts/editor/propertiesPanel.js"></script>
+<script src="scripts/editor/tabs.js"></script>
 
-  <script src="scripts/main.js"></script>
+<script src="scripts/features/fonts.js"></script>
+<script src="scripts/features/copyPaste.js"></script>
+<script src="scripts/features/undoRedo.js"></script>
+<script src="scripts/features/keyboard.js"></script>
+<script src="scripts/features/importExport.js"></script>
+<script src="scripts/features/image.js"></script>
+<script src="scripts/features/ai.js"></script>
+
+<script src="scripts/main.js"></script>
+
 </html>

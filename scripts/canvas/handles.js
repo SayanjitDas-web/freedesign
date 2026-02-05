@@ -41,4 +41,5 @@ function dragHandleEnd() {
     activeHandle = null;
     document.removeEventListener('mousemove', dragHandleMove);
     document.removeEventListener('mouseup', dragHandleEnd);
+    addToHistory();
 }

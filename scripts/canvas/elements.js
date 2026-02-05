@@ -1,4 +1,4 @@
-function addElement(type) {
+function addElement(type, extraContent = null) {
     if (!currentDesign) return;
 
     // 1. Create the Base Object (Properties common to ALL types)
@@ -16,8 +16,21 @@ function addElement(type) {
         strokeWidth: type === 'line' ? 4 : 0, // Lines need width by default, shapes don't
     };
 
+    if (type === 'image') {
+        newEl.x = 50; newEl.y = 50;
+        newEl.w = 200; newEl.h = 200; // Default image size
+        newEl.src = extraContent; // Save Base64 string
+        
+        // Images support these shape properties:
+        newEl.radius = 0;
+        newEl.radiusIsIndividual = false;
+        newEl.radiusTL = 0; newEl.radiusTR = 0; newEl.radiusBR = 0; newEl.radiusBL = 0;
+        newEl.hasShadow = false;
+        newEl.shadowX = 5; newEl.shadowY = 5; newEl.shadowBlur = 10; newEl.shadowColor = "rgba(0,0,0,0.3)";
+    }
+
     // 2. Add SHAPE & TEXT Specific Properties
-    if (type === 'rect' || type === 'circle' || type === 'text') {
+    else if (type === 'rect' || type === 'circle' || type === 'text') {
         // Position & Size
         newEl.x = 50; 
         newEl.y = 50; 
@@ -76,4 +89,6 @@ function addElement(type) {
     if (typeof switchTab === "function") { 
         switchTab('props'); 
     }
+
+    addToHistory();
 }

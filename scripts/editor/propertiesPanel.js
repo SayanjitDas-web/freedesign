@@ -5,8 +5,28 @@ function renderPropertiesPanel() {
 
     // 2. CHECK SELECTION
     if (!selectedIds || selectedIds.length === 0) {
-        panel.innerHTML = '<p class="empty-selection">Select an element to edit properties.</p>';
-        return;
+        panel.innerHTML = '<div id="prop-controls"></div>';
+        const container = document.getElementById('prop-controls');
+        
+        let html = `<div style="margin:10px 0 5px 0; font-weight:bold; font-size:11px; text-transform:uppercase; border-bottom:1px solid #ddd;">Canvas Settings</div>`;
+        
+        // Canvas Width
+        html += `<div class="prop-row"><label>Width</label>
+            <input type="number" value="${currentDesign.width || 800}" onchange="updateCanvasSettings('width', this.value)">
+        </div>`;
+        
+        // Canvas Height
+        html += `<div class="prop-row"><label>Height</label>
+            <input type="number" value="${currentDesign.height || 600}" onchange="updateCanvasSettings('height', this.value)">
+        </div>`;
+        
+        // Canvas Background Color
+        html += `<div class="prop-row"><label>Bg Color</label>
+            <input type="color" value="${currentDesign.backgroundColor || '#ffffff'}" oninput="updateCanvasSettings('backgroundColor', this.value)">
+        </div>`;
+        
+        container.innerHTML = html;
+        return; // Stop here, don't try to render element props
     }
 
     // 3. PREPARE THE CONTAINER
@@ -36,8 +56,12 @@ function renderPropertiesPanel() {
     // 1. BASIC DIMENSIONS (Shapes)
     // ==========================================
     if (el.type !== 'text' && el.type !== 'line') {
-        html += section("Dimensions & Color");
-        html += row('Fill', `<input type="color" value="${el.fill}" oninput="updateProp('${el.id}', 'fill', this.value)">`);
+        html += section("Dimensions");
+        
+        // Only show Fill Color for Shapes (Not Images)
+        if (el.type !== 'image') {
+            html += row('Fill', `<input type="color" value="${el.fill}" oninput="updateProp('${el.id}', 'fill', this.value)">`);
+        }
         
         // Rotation
         html += row('Rotation', `
@@ -169,4 +193,24 @@ function updateProp(id, key, value) {
     
     renderCanvas();
     renderPropertiesPanel(); // Refresh to show updated values
+}
+
+// --- CANVAS SETTINGS LOGIC ---
+function updateCanvasSettings(key, value) {
+    if (!currentDesign) return;
+
+    if (key === 'width' || key === 'height') {
+        value = parseInt(value) || 0;
+        // Update DOM immediately
+        canvas.style[key] = value + 'px';
+    } 
+    else if (key === 'backgroundColor') {
+        canvas.style.backgroundColor = value;
+    }
+
+    // Update Data
+    currentDesign[key] = value;
+    
+    // Save
+    addToHistory();
 }
